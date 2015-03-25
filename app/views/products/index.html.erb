@@ -1,0 +1,46 @@
+<div class="row">
+	<div class="col-md-8">
+		<h3>Welcome <%= current_user.first_name %></h3>
+	</div>
+	
+	<div class="col-md-4">
+		<a class="btn btn-success" href="/dashboard/<%= current_user.id %>">Go to dashboard</a> <a class="btn btn-danger" href="/signout/">Logout</a>		
+	</div>
+</div>
+<div class="row">
+	<table class="table">
+		<thead>
+			<tr>
+				<td><h3>Product</h3></td>
+				<td><h3>Seller</h3></td>
+				<td><h3>Date Posted</h3></td>
+				<td><h3>Amount</h3></td>
+				<td><h3>Action</h3></td>	
+			</tr>
+		</thead>
+		<tbody>
+
+			<% @products.reverse.each do |product| %>
+			<tr>
+				<td><%= product.name %></td>
+				<td>Esteban static</td>
+				<td><%= product.created_at %></td>
+				<td><%= product.price %></td>
+				<td>
+				<% if current_user.id == product.user_id %>
+					<a href="/dashboard/<%= current_user.id %>" class="btn btn-primary">Go to dashboard</a>
+				<% else %>
+					<form action="/sale/create" method="post">
+						<input name="authenticity_token" value="<%= form_authenticity_token %>" type="hidden">
+						<input type="hidden" name="sale[user_id]" value="<%= product.user_id %>">
+						<input type="hidden" name="sale[product_id]" value="<%= product.id %>">
+						<input type="hidden" name="sale[buyer_id]" value="<%= session[:user_id]%>">
+						<button type="submit" class="btn btn-success">Purchase this item</button>
+					</form>
+				<% end %>
+				</td>	
+			</tr>
+			<% end %>
+		</tbody>
+	</table>
+</div>

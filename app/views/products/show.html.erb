@@ -1,0 +1,105 @@
+<div class="row">
+	<div class="col-md-8">
+		<h3>Hi <%= current_user.first_name %></h3>
+	</div>
+	
+	<div class="col-md-4">
+		<a class="btn btn-success" href="/products/">Go to products</a> <a class="btn btn-danger" href="/signout/">Logout</a>		
+	</div>
+</div>
+<div class="row">
+	<h3>Sell your product</h3>
+
+	<form action="/products/create" method="post">
+			<input name="authenticity_token" value="<%= form_authenticity_token %>" type="hidden">
+			<input type="hidden" name="product[user_id]" value="<%= session[:user_id]%>">
+			<div class="group-form">
+				<label>Name</label>
+				<input type="text" name="product[name]" class="form-control">
+			</div>
+			<div class="group-form">
+				<label>Price</label>
+				<input type="text" name="product[price]" class="form-control">
+			</div>
+			<br />		
+			<div class="group-form">
+				<button type="submit" class="btn btn-success">Sell</button> <a href="/products" class="btn btn-primary">Back</a>
+			</div>
+			<%if flash[:danger] %>
+				<% flash[:danger].each do |error| %>
+					<h5 class="alert alert-danger"><%=error %></h5>
+				<% end %>
+			<% end %>
+
+			<% if flash[:success] %>
+				<h5 class="alert alert-success"><%=flash[:success]%></h5>
+			<% end %>
+		</form>
+</div>
+<div class="row">
+	<h3>Your product that are not yet sold</h3>
+	<table class="table">
+		<tbody>
+			<tr>
+				<td><h3>Product</h3></td>
+				<td><h3>Date posted</h3></td>
+				<td><h3>Amount</h3></td>
+				<td><h3>Action</h3></td>
+			</tr>
+		</tbody>
+		<tbody>
+
+			<% @notSold.reverse.each do |myproduct| %>
+			<tr>
+				<td><%= myproduct.name %></td>
+				<td><%= myproduct.created_at %></td>
+				<td><%= myproduct.price %></td>
+				<td><a href="/products/<%= myproduct.id %>" class="btn btn-danger">Delete</a></td>
+			</tr>
+			<% end %>
+		</tbody>
+	</table>
+
+	<table class="table">
+		<h3>Sales</h3>
+		<thead>
+			<tr>
+				<td><h3>Product</h3></td>
+				<td><h3>Date bought</h3></td>
+				<td><h3>Buyer</h3></td>
+				<td><h3>Amount</h3></td>
+			</tr>
+		</thead>
+		<tbody>
+			<% @sales.reverse.each do |myproduct| %>
+			<tr>
+				<td><%= myproduct.name %></td>
+				<td><%= myproduct.created_at %></td>
+				<td></td>
+				<td><%= myproduct.price %></td>
+			</tr>
+			<% end %>
+		</tbody>
+	</table>
+	<h3>Purchases</h3>
+	<table class="table">
+		<tbody>
+			<tr>
+				<td><h3>Product</h3></td>
+				<td><h3>Date bought</h3></td>
+				<td><h3>Seller</h3></td>
+				<td><h3>Amount</h3></td>
+			</tr>
+		</tbody>
+		<tbody>
+			<% @purchases.reverse.each do |purchase| %>
+			<tr>
+				<td><%= purchase.name %></td>
+				<td><%= purchase.created_at %></td>
+				<td></td>
+				<td><%= purchase.price %></td>
+			</tr>
+			<% end %>
+		</tbody>
+	</table>
+</div>
